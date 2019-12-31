@@ -1,5 +1,6 @@
 import pokepy
 
+import client
 from poketypes import VersionedMove, Stats
 
 class Pokemon:
@@ -30,8 +31,11 @@ class Pokemon:
                 learn_method = version.move_learn_method.name
                 game_version = version.version_group.name
 
+                move_name = move.move.name
+
                 if learn_method == 'level-up' and game_version == generation:
-                    all_moves.append(VersionedMove(move, version))
+                    move_resource = client.get_move(move_name)
+                    all_moves.append(VersionedMove(move_resource, version))
         
         # Sort moves by level using lambda function
         all_moves.sort(key = lambda move: move.version.level_learned_at, reverse=True)
@@ -65,6 +69,13 @@ class Pokemon:
         for stat in pokemon.stats:
             stat_list.append(stat.base_stat)
         
+        # Using * to unpack the list
         stats = Stats(*stat_list)
 
-        return stats 
+        return stats
+
+    def print_moves(self):
+        """ Print the pokémon's four moves """
+
+        for versioned_move in self.moves:
+            print(versioned_move.move.name)
