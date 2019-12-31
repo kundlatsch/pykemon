@@ -25,13 +25,13 @@ class Pokemon:
         self.stats = self.get_stats()
         
 
-    def get_all_moves(self):
-        """Return the pokémon's all leveling-up learned moves
-
-        This function returns a list of all moves
-        learned by leveling up. The list of moves is
-        from the generation VIII (ultra sun and ultra moon),
-        because it is the last game with all pokemons.
+    def get_all_moves(self, generation):
+        """Return the pokémon's all leveling-up learned moves from the given genertion.
+        
+        Args:
+            generation: The name of the generation from which moves are selected (see PokeAPI for more information). 
+        Returns:
+            A list of all the pokémon leveling-up learned moves.
         """
 
         pokemon = self.pokeAPI_data
@@ -42,7 +42,7 @@ class Pokemon:
                 learn_method = version.move_learn_method.name
                 game_version = version.version_group.name
 
-                if learn_method == 'level-up' and game_version == 'ultra-sun-ultra-moon':
+                if learn_method == 'level-up' and game_version == generation:
                     all_moves.append(VersionedMove(move, version))
         
         # Sort moves by level using lambda function
@@ -51,14 +51,13 @@ class Pokemon:
         return all_moves
     
     def select_moves(self):
-        """ Select pokemon's four moves
-
-        In this implementation, the four most 
-        recently learned movements are selected
-        based on pokemon current level
+        """Select pokemon's four moves, based on pokémon current level
+        
+        Returns:
+            A list of four VersionedMoves
         """
         
-        all_moves = self.get_all_moves()
+        all_moves = self.get_all_moves("ultra-sun-ultra-moon")
         selected_moves = []
 
         for move in all_moves:
@@ -71,7 +70,7 @@ class Pokemon:
 
     def get_stats(self):
         """ Get pokémon stats, returning a Stats named tuple """
-        
+
         pokemon = self.pokeAPI_data
         stat_list = []
         
