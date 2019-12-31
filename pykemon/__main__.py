@@ -16,7 +16,7 @@ def main():
     # print(abilities)
 
     # print(dir(client.get_pokemon(4)))
-    Pokemon(client.get_pokemon('charmander'), 20)
+    charizard = Pokemon(client.get_pokemon('charizard'), 50)
 
 if __name__ == "__main__":
     main()

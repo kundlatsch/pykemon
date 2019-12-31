@@ -5,6 +5,15 @@ class VersionedMove(NamedTuple):
     move: pokepy.resources_v2.PokemonMoveSubResource
     version: pokepy.resources_v2.PokemonMoveSubResource
 
+class Stats(NamedTuple):
+    speed: int
+    special_defense: int
+    special_attack: int
+    defense: int
+    attack: int
+    hp: int
+
+
 class Pokemon:
 
     def __init__(self, pokemon, level):
@@ -13,12 +22,11 @@ class Pokemon:
         self.name = pokemon.name
         self.level = level
         self.moves = self.select_moves()
+        self.stats = self.get_stats()
         
-        for move in self.moves:
-            print(move.move.move.name)
 
     def get_all_moves(self):
-        """Return the pokemon's all leveling-up learned moves
+        """Return the pokémon's all leveling-up learned moves
 
         This function returns a list of all moves
         learned by leveling up. The list of moves is
@@ -43,7 +51,7 @@ class Pokemon:
         return all_moves
     
     def select_moves(self):
-        """ Select the four moves of the pokemon
+        """ Select pokemon's four moves
 
         In this implementation, the four most 
         recently learned movements are selected
@@ -60,3 +68,16 @@ class Pokemon:
                 return selected_moves
         
         return selected_moves
+
+    def get_stats(self):
+        """ Get pokémon stats, returning a Stats named tuple """
+        
+        pokemon = self.pokeAPI_data
+        stat_list = []
+        
+        for stat in pokemon.stats:
+            stat_list.append(stat.base_stat)
+        
+        stats = Stats(*stat_list)
+
+        return stats 
