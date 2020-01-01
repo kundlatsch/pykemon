@@ -1,0 +1,2 @@
+class InvalidAttackType(Exception):
+    pass
