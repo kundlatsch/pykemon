@@ -42,11 +42,11 @@ def calc_damage(atk_pokemon, def_pokemon, move):
 
     # In generation 1, a critical hit doubles the level (not using here)
     level_damage = ((2 * atk_pokemon.level) / 5) + 2
-    
     power = move.power
     attack_fraction = attack/defense
-    base_damage = (level_damage * power * attack_fraction) * 50
 
+    base_damage = ((level_damage * power * attack_fraction) / 50) + 2
+    
     # Modifier variables
     
     # Simplified target to 1, once we only have 1v1 fights at the moment
@@ -69,7 +69,7 @@ def calc_damage(atk_pokemon, def_pokemon, move):
     return final_damage
 
 def calc_critical(speed, move):
-    """Calculate if an attack was critical or not.
+    """Calculate if an attack was a critical hit or not.
 
     Args:
         speed: The speed of the attacking pokémon.

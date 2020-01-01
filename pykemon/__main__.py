@@ -11,10 +11,9 @@ def main():
     # p1 = BattleState(p, p.stats)
 
     p2 = Pokemon(client.get_pokemon(6), 50)
-    for move in p2.moves:
-        print(move.move.name)
-    calc_damage(p1, p2, p1.moves[0].move)
-
+    
+    dmg = calc_damage(p1, p2, p1.moves[0].move)
+    print(dmg)
 
 if __name__ == "__main__":
     main()
