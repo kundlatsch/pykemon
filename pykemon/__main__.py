@@ -3,6 +3,7 @@ from random import randrange
 
 import client
 from pokemon import Pokemon
+from battle_state import BattleState
 
 def get_all_abilities(pokemons):
     """ Get all abilities from a given number of pokémon
@@ -42,9 +43,15 @@ def main():
     # print(abilities)
 
     # print(dir(client.get_pokemon(4)))
-    p = get_random_pokemon(150, 50)
-    print(p.name)
-    p.print_moves()
+    # p = get_random_pokemon(150, 50)
+    p = Pokemon(client.get_pokemon(3), 50)
+    p1 = BattleState(p, p.stats.hp, p.stats)
+
+    p = Pokemon(client.get_pokemon(6), 50)
+    print('Battle: ')
+    print(p1.hp)
+    p1.calc_damage(p.stats.attack)
+    print(p1.hp)
 
 if __name__ == "__main__":
     main()
