@@ -50,18 +50,16 @@ def calc_damage(atk_pokemon, def_pokemon, move):
 
     # Modifier variables
     
-    # Simplified target to 1, once we only have 1v1 fights at the moment
+    # Target: simplified target to 1, once we only have 1v1 fights at the moment
     target = 1
     
-    # Simplified weather to 1, once we do not have weather implemented yet
+    # Weather: simplified weather to 1, once we do not have weather implemented yet
     weather = 1
-    
-    # Badge not applied (this feature only appeared in gen 2)
     
     # Random: a value between 0.85 and 100
     random = randint(85, 100) / 100
     
-    # STAB: same-type attack bonus
+    # STAB (same-type attack bonus):
     # If the pokémon attack's has the same type of the
     # pokémon itself, the attack has 50% more damage
     
@@ -75,22 +73,47 @@ def calc_damage(atk_pokemon, def_pokemon, move):
                 stab = 1.5
 
 
+    # Critical: logic separated in calc_critical function.
+    # It is 2 for a critical hit in Generations II-V,
+    # 1.5 for a critical hit from Generation VI onward,
+    # and 1 otherwise.
+    is_critical = calc_critical(atk_pokemon.stats.speed, move)
 
-    critical = calc_critical(atk_pokemon.stats.speed, move)
-    if critical:
-        # add critical logic
-        pass
+    if is_critical:
+        print('critical!')
+        critical = 1.5
+    else:
+        critical = 1
     
-    # TODO: add all modifier variables
-
     # Type effectiveness multiplier
     effectiveness = get_type_effectiveness(move.type.name, def_pokemon.types)
-    
-    modifier = target * weather * random * stab * effectiveness
-        
-    final_damage = base_damage * modifier 
 
-    return int(final_damage)
+    # Burn: it is 0.5 if the attacker is burned,
+    # its Ability is not Guts, and the used move is a
+    # physical move (other than Facade from Generation VI
+    # onward), and 1 otherwise.
+    burn = 1
+
+    # I have to decide how to get the information 'the pokémon is burned?',
+    # probably passing the battle_state instead of pokémons as the args
+    # of this calc_damage function
+    if atk_pokemon.ability != 'guts' and move.damage_class == 'physical':
+        # if battle status of burned, burn = 0.5
+        pass
+
+    # Other: 1 in most cases, and a different multiplier
+    # when specificinteractions of moves, Abilities, or
+    # items take effect. Implementation needed!
+    other = 1
+
+    modifier = target * weather * critical* random * stab * effectiveness * burn * other
+        
+    final_damage = int(base_damage * modifier) 
+
+    if final_damage <= 0 and effectiveness != 0:
+        return 1
+    else:
+        return final_damage
 
 def calc_critical(speed, move):
     """Calculate if an attack was a critical hit or not.
