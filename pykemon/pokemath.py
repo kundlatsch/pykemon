@@ -10,10 +10,11 @@ separately by the library user.
 
 from errors import InvalidAttackType
 from random import randrange, randint
+from data import EFFECTIVENESS
 
 
 def calc_damage(atk_pokemon, def_pokemon, move):
-    """ Damage calculation function, based on Gen VII specifications.
+    """Damage calculation function, based on Gen VII specifications.
         
         Args:
             atk_pokemon: Pokemon that will attack.
@@ -81,12 +82,15 @@ def calc_damage(atk_pokemon, def_pokemon, move):
         pass
     
     # TODO: add all modifier variables
+
+    # Type effectiveness multiplier
+    effectiveness = get_type_effectiveness(move.type.name, def_pokemon.types)
     
-    modifier = target * weather * random * stab
+    modifier = target * weather * random * stab * effectiveness
         
     final_damage = base_damage * modifier 
 
-    return final_damage
+    return int(final_damage)
 
 def calc_critical(speed, move):
     """Calculate if an attack was a critical hit or not.
@@ -110,7 +114,45 @@ def calc_critical(speed, move):
         return False
 
 def get_type_effectiveness(atk_type, def_types):
-    """
+    """Get the effectiveness multiplier based on the attack type and the defender types.
     
+    Args:
+        atk_type: The attack type name.
+        def_types: A list with the defending pokémon types.
+    Returns:
+        The effectiveness multiplier.
     """
 
+    strong, weak, ineffective = EFFECTIVENESS[atk_type]
+
+    # Effective sum, used to compute effectiveness in case
+    # of the defender pokémon having more than one type.
+    eff_sum = 0
+
+    for def_type in def_types:
+        
+        if def_type.name in ineffective:
+            return 0
+
+        elif def_type.name in strong:
+            eff_sum = eff_sum + 2
+
+        elif def_type.name in weak:
+            eff_sum = eff_sum - 2
+
+    
+    # Attack weak against 1 defending type
+    if eff_sum == -2:
+        return 1/2
+    
+    # Attack weak against 2 defending types
+    if eff_sum == -4:
+        return 1/4
+    
+    # Attack neutral against defending pokémon
+    if eff_sum == 0:
+        return 1
+    
+    # Attack strong against one or both defeding types
+    return eff_sum
+    
