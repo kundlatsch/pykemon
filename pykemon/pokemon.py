@@ -1,7 +1,9 @@
 import pokepy
 
 import client
+from random import sample
 from poketypes import VersionedMove, Stats
+
 
 class Pokemon:
 
@@ -12,6 +14,8 @@ class Pokemon:
         self.level = level
         self.moves = self.select_moves()
         self.stats = self.get_stats()
+        self.types = self.get_types()
+        self.ability = self.get_ability()
         
 
     def get_all_moves(self, generation):
@@ -61,7 +65,7 @@ class Pokemon:
         return selected_moves
 
     def get_stats(self):
-        """ Get pokémon stats, returning a Stats named tuple """
+        """Get pokémon stats, returning a Stats named tuple"""
 
         pokemon = self.pokeAPI_data
         stat_list = []
@@ -75,7 +79,28 @@ class Pokemon:
         return stats
 
     def print_moves(self):
-        """ Print the pokémon's four moves """
+        """Print the pokémon's four moves"""
 
         for versioned_move in self.moves:
             print(versioned_move.move.name)
+        
+    def get_types(self):
+        """Return a list with the pokémon types (one or two types)"""
+        pokemon = self.pokeAPI_data
+        types = []
+        for pokemon_type in pokemon.types:
+            types.append(pokemon_type.type)
+        
+        return types
+    
+    def get_ability(self):
+        """Get one random ability from pokémon's possible abilities"""
+        pokemon = self.pokeAPI_data
+        abilities = set()
+        
+        for ability in pokemon.abilities:
+            abilities.add(ability.ability.name)
+        
+        [ability] = sample(abilities, 1)
+
+        return ability

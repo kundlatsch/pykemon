@@ -9,7 +9,7 @@ separately by the library user.
 """
 
 from errors import InvalidAttackType
-from random import randrange
+from random import randrange, randint
 
 
 def calc_damage(atk_pokemon, def_pokemon, move):
@@ -46,25 +46,45 @@ def calc_damage(atk_pokemon, def_pokemon, move):
     attack_fraction = attack/defense
 
     base_damage = ((level_damage * power * attack_fraction) / 50) + 2
-    
+
     # Modifier variables
     
     # Simplified target to 1, once we only have 1v1 fights at the moment
     target = 1
+    
     # Simplified weather to 1, once we do not have weather implemented yet
     weather = 1
-    # Badge not applied (this feature only appeared in gen 2)
-    critical = calc_critical(atk_pokemon.stats.speed, move)
     
+    # Badge not applied (this feature only appeared in gen 2)
+    
+    # Random: a value between 0.85 and 100
+    random = randint(85, 100) / 100
+    
+    # STAB: same-type attack bonus
+    # If the pokémon attack's has the same type of the
+    # pokémon itself, the attack has 50% more damage
+    
+    stab = 1.0
+    for pokemon_type in atk_pokemon.types:
+        if pokemon_type.name == move.type.name:
+
+            if atk_pokemon.ability == 'adaptability':
+                stab = 2.0
+            else:
+                stab = 1.5
+
+
+
+    critical = calc_critical(atk_pokemon.stats.speed, move)
     if critical:
         # add critical logic
         pass
     
     # TODO: add all modifier variables
     
-    modifier = target * weather
+    modifier = target * weather * random * stab
         
-    final_damage = base_damage * modifier
+    final_damage = base_damage * modifier 
 
     return final_damage
 
@@ -88,4 +108,9 @@ def calc_critical(speed, move):
         return True
     else:
         return False
+
+def get_type_effectiveness(atk_type, def_types):
+    """
+    
+    """
 
