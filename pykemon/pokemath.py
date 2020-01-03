@@ -13,16 +13,19 @@ from random import randrange, randint
 from data import EFFECTIVENESS
 
 
-def calc_damage(atk_pokemon, def_pokemon, move):
+def calc_damage(atk_pokemon_bs, def_pokemon_bs, move):
     """Damage calculation function, based on Gen VII specifications.
         
         Args:
-            atk_pokemon: Pokemon that will attack.
-            def_pokemon: Pokemon that will be attacked.
+            atk_pokemon_bs: Attacking pokémon's battle state.
+            def_pokemon_bs: Defending pokémon's battle state.
             atk_type: Attack type - physical (1) or special (2). String or int can be used.
         Returns:
             Total amount of damage given to def_pokemon.
     """
+
+    atk_pokemon = atk_pokemon_bs.pokemon
+    def_pokemon = def_pokemon_bs.pokemon
 
     atk_type = move.damage_class.name
 
@@ -80,12 +83,12 @@ def calc_damage(atk_pokemon, def_pokemon, move):
     is_critical = calc_critical(atk_pokemon.stats.speed, move)
 
     if is_critical:
-        print('critical!')
         critical = 1.5
     else:
         critical = 1
     
-    # Type effectiveness multiplier
+    # Effectiveness: 1, 2, 4, 1/2 or 1/4 depending on
+    # attack type and the defending pokémon's type
     effectiveness = get_type_effectiveness(move.type.name, def_pokemon.types)
 
     # Burn: it is 0.5 if the attacker is burned,
@@ -94,12 +97,9 @@ def calc_damage(atk_pokemon, def_pokemon, move):
     # onward), and 1 otherwise.
     burn = 1
 
-    # I have to decide how to get the information 'the pokémon is burned?',
-    # probably passing the battle_state instead of pokémons as the args
-    # of this calc_damage function
-    if atk_pokemon.ability != 'guts' and move.damage_class == 'physical':
-        # if battle status of burned, burn = 0.5
-        pass
+    if atk_pokemon_bs.condition == 'burned':
+        if atk_pokemon.ability != 'guts' and move.damage_class == 'physical':
+            burn = 0.5
 
     # Other: 1 in most cases, and a different multiplier
     # when specificinteractions of moves, Abilities, or
@@ -176,6 +176,6 @@ def get_type_effectiveness(atk_type, def_types):
     if eff_sum == 0:
         return 1
     
-    # Attack strong against one or both defeding types
+    # Attack strong against one or both defending types
     return eff_sum
     
