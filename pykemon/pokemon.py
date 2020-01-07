@@ -1,4 +1,5 @@
 import pokepy
+from pokepy import resources_v2 as pokepy
 
 import client
 from random import sample
@@ -7,7 +8,7 @@ from poketypes import VersionedMove, Stats
 
 class Pokemon:
 
-    def __init__(self, pokemon, level):
+    def __init__(self, pokemon: pokepy.PokemonResource, level: int):
         self.pokeAPI_data = pokemon
         self.id = pokemon.id
         self.name = pokemon.name
@@ -18,7 +19,7 @@ class Pokemon:
         self.ability = self.get_ability()
         
 
-    def get_all_moves(self, generation):
+    def get_all_moves(self, generation: str):
         """Return the pokémon's all leveling-up learned moves from the given genertion.
         
         Args:

@@ -1,10 +1,19 @@
-import pokepy
+# -*- coding: utf-8 -*-
+"""Project's types module.
+
+This module contains the types used into different parts of the whole
+project. The types are NamedTuples ore dataclass structures.
+
+"""
+
+
+from pokepy import resources_v2 as pokepy
 from dataclasses import dataclass
 from typing import NamedTuple
 
 class VersionedMove(NamedTuple):
-    move: pokepy.resources_v2.MoveResource
-    version: pokepy.resources_v2.PokemonMoveSubResource
+    move: pokepy.MoveResource
+    version: pokepy.PokemonMoveSubResource
 
 @dataclass
 class Stats():

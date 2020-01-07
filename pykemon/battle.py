@@ -1,16 +1,9 @@
-from dataclasses import dataclass
 from random import randint
 
 from pokemon import Pokemon
-from poketypes import Stats
-from pokemath import calc_damage
+from poketypes import Stats, VersionedMove
+from pokemath import calc_damage, accuracy_check, BattleState
 from errors import InvalidMove
-
-@dataclass
-class BattleState:
-    pokemon: Pokemon
-    stats: Stats
-    condition: str = None
 
 class Battle:
 
@@ -32,6 +25,22 @@ class Battle:
         else:
             return self.pokemon1
     
+    def turn(self, p1_action, p2_action):
+        
+        
+
+        if isinstance(p1_action, Pokemon):
+            # change pokemon logic
+            pass
+        
+        if isinstance(p2_action, Pokemon):
+            # change pokemon logic
+            pass
+        
+        if isinstance(p1_action, VersionedMove):
+            pass
+        
+    
     def make_move(self, versioned_move):
         atk_pokemon = self.get_active_pokemon()
         def_pokemon = self.get_other_pokemon(atk_pokemon)
@@ -47,8 +56,13 @@ class Battle:
             raise InvalidMove(f"{atk_pokemon.pokemon.name}"
                               f" don't have the attack {move.move.name}")
         
+        move_cfg = (atk_pokemon, def_pokemon, move)
+
         if move.damage_class.name != 'status':
-            damage = calc_damage(atk_pokemon, def_pokemon, move)
-            def_pokemon.stats.hp -= damage
+            if accuracy_check(*move_cfg):
+                damage = calc_damage(*move_cfg)
+                def_pokemon.stats.hp -= damage
+        
+
 
         # TODO: Add move status logic!
